@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <title>Доставочка</title>
+    <link rel="stylesheet" href={{ url_for('static', filename='css/style.css') }}>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates&family=Montserrat:wght@100&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  </head>
+  <body>
+    <form action="{{ url_for('profile') }}" method="post" enctype="multipart/form-data">
+        <header class="header1" style="margin-bottom: 20px;">
+             <div class="header2">
+                <h2>Профиль</h2>
+
+
+                  <div class="load">
+                   <label for="file" class="label">Загрузить фото</label>
+                    <input type="file" class="my" id="file" name="file">
+                    <script>
+                      $('.my').change(function() {
+                      if ($(this).val() != '') $(this).prev().text('Выбрано файлов: ' + $(this)[0].files.length);
+                      else $(this).prev().text('Загрузить фото');
+                      });
+                    </script>
+                  </div>
+
+                </div>
+          <div class="round"><img src={{ url_for('static', filename=session['photo']) }}></div>
+        </header>
+        <main>
+          <div class="fields1">
+              <div class="fi">
+                <p>Логин:</p>
+                <p>Почта:</p>
+                <p>Корпус:</p>
+                <p>Контакты:</p>
+
+              </div>
+
+              <div class="inp">
+                <input id="username" name="username" type="text" class="line" value={{ session['username'] }}></input>
+                <input id="email" name="email" type="text" class="line" value={{ session['email'] }}></input>
+
+                  <select id="building" name="building" class="line" >
+                    <option disabled>Выберите корпус</option>
+                    <option value="11">11</option>
+                    <option value="10">10</option>
+                    <option value="9">9</option>
+                    <option value="8.1">8.1</option>
+                    <option value="8.2">8.2</option>
+                    <option value="7.1">7.1</option>
+                    <option value="7.2">7.2</option>
+                    <option value="6.1">6.1</option>
+                    <option value="6.2">6.2</option>
+                    <option value="5">5</option>
+                    <option value="4">4</option>
+                    <option value="3">3</option>
+                    <option value="2">2</option>
+                    <option value="2.1">2.1</option>
+                    <option value="2.2">2.2</option>
+                    <option value="2.3">2.3</option>
+                    <option value="2.4">2.4</option>
+                    <option value="2.5">2.5</option>
+                    <option value="2.6">2.6</option>
+                    <option value="2.7">2.7</option>
+                    <option value="2.8">2.8</option>
+                    <option value="1">1</option>
+                    <option value="1.8">1.8</option>
+                    <option value="1.9">1.9</option>
+                    <option value="1.10">1.10</option>
+                    <option value="1.11">1.11</option>
+                    <option value="Город">Город</option>
+                </select>
+                  <script>$('.line option[value="{{ session['building'] }}"]').prop('selected', true)</script>
+
+                   <input class="line" id="contact" name="contact" value="{{ session['contact'] }}" placeholder="Ваши контакты"></input>
+              </div>
+
+          </div>
+          <div class="ank">
+            <p>Показывать мою<br>анкету курьера</p>
+            <input name="courier" value="courier" type="checkbox" class="tic">
+        </div>
+            <script>
+              if ("{{ session['courier'] }}" === "True") $('.tic').prop('checked', true);
+              else $('.tic').prop('checked', false);
+          </script>
+
+        <button type="submit" value="save">Сохранить</button>
+            <div class="msg">{{ msg }}</div>
+
+  </main>
+  </form>
+
+    <p><a href="{{url_for('logout')}}">Выйти из аккаунта</a></p>
+
+
+      <div class = "footer">
+    <div class="border"></div>
+      <div class="menu">
+        <a href="{{url_for('couriers')}}" class="nav"><img src={{ url_for('static', filename='img/car.png') }}><p>Курьеры</p></a>
+          {% if session['courier'] %}
+            <a href="{{url_for('chat')}}" class="nav"><img src={{ url_for('static', filename='img/chat.png') }}><p>Заявки</p></a>
+          {% endif %}
+        <a href="{{url_for('orders')}}" class="nav"><img src={{ url_for('static', filename='img/shopping-bag.png') }}><p>Заказы</p></a>
+        <a href="{{url_for('profile')}}" id="active" class="nav"><img src={{ url_for('static', filename='img/user.png') }}><p>Профиль</p></a>
+      </div>
+    </div>
+
+  </body>
+</html>

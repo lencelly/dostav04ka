@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href={{ url_for('static', filename='css/style.css') }}>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates&family=Montserrat:wght@100&display=swap" rel="stylesheet">
+    <title>Такой страницы не существует</title>
+</head>
+<body>
+    <div style="position: relative; margin: 20px; margin-top: 40vh">
+        <p><span class="h2">Такой страницы не существует</span><br><br>
+            Потерялись?<br>
+        <a href="{{url_for('couriers')}}">Вернуться</a></p>
+    </div>
+</body>
+</html>

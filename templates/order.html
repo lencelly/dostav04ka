@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <title>Доставочка</title>
+    <link rel="stylesheet" href={{ url_for('static', filename='css/style.css') }}>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates&family=Montserrat:wght@100&display=swap" rel="stylesheet">
+      <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  </head>
+  <body>
+    <header class="header1">
+        <h2>Сделать заказ</h2>
+    </header>
+    <main>
+        <form action="/order/{{ courier['id'] }}/" method="post">
+        <div class="fields1">
+            <div class="fi"> 
+              <p>Корпус:</p>
+              <p>Место:</p>
+              <p>Сколько позиций в заказе:</p>
+                <p>Номер заказа:</p>
+                <p>Способ связи:</p>
+            </div>
+  
+            <div class="inp">
+              <select id="building" name="building" class="line" >
+                    <option disabled>Выберите корпус</option>
+                    <option value="11">11</option>
+                    <option value="10">10</option>
+                    <option value="9">9</option>
+                    <option value="8.1">8.1</option>
+                    <option value="8.2">8.2</option>
+                    <option value="7.1">7.1</option>
+                    <option value="7.2">7.2</option>
+                    <option value="6.1">6.1</option>
+                    <option value="6.2">6.2</option>
+                    <option value="5">5</option>
+                    <option value="4">4</option>
+                    <option value="3">3</option>
+                    <option value="2">2</option>
+                    <option value="2.1">2.1</option>
+                    <option value="2.2">2.2</option>
+                    <option value="2.3">2.3</option>
+                    <option value="2.4">2.4</option>
+                    <option value="2.5">2.5</option>
+                    <option value="2.6">2.6</option>
+                    <option value="2.7">2.7</option>
+                    <option value="2.8">2.8</option>
+                    <option value="1">1</option>
+                    <option value="1.8">1.8</option>
+                    <option value="1.9">1.9</option>
+                    <option value="1.10">1.10</option>
+                    <option value="1.11">1.11</option>
+                </select>
+                <script>$('.line option[value="{{ session['building'] }}"]').prop('selected', true)</script>
+                <select required id="place" name="place" class="line">
+                    <option selected="selected">Выберите место</option>
+                    {% for el in courier['places'].split(", ") %}
+                    <option class="opt" value="{{ el }}">{{ el }}</option>#}
+                    {% endfor %}
+                  </select>
+              <input class="line" id="amount" name="amount" required></input>
+                <input class="line" id="order_num" name="order_num" required></input>
+                <input class="line" id="contact" name="contact" value="{{ session['contact'] }}" required placeholder="Ваши контакты"></input>
+            </div>
+        </div>
+        <p style="margin: 15px 0">Обратите внимание, заказ должен быть заранее <b>оплачен</b></p>
+
+        <textarea class="comm" id="comm" name="comm" placeholder="Комментарий (поле можно оставить пустым)"></textarea>
+        <button type="submit" class="button" value="OK">ОК</button>
+            <div class="msg">{{ msg }}</div>
+             </form>
+    </main>
+
+      <div class = "footer">
+    <div class="border"></div>
+      <div class="menu">
+        <a href="{{url_for('couriers')}}" class="nav"><img src={{ url_for('static', filename='img/car.png') }}><p>Курьеры</p></a>
+          {% if session['courier'] %}
+            <a href="{{url_for('chat')}}" class="nav"><img src={{ url_for('static', filename='img/chat.png') }}><p>Заявки</p></a>
+          {% endif %}
+        <a href="{{url_for('orders')}}" class="nav"><img src={{ url_for('static', filename='img/shopping-bag.png') }}><p>Заказы</p></a>
+        <a href="{{url_for('profile')}}" class="nav"><img src={{ url_for('static', filename='img/user.png') }}><p>Профиль</p></a>
+      </div>
+    </div>
+
+  </body>
+</html>

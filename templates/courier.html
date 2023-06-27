@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <title>Доставочка</title>
+    <link rel="stylesheet" href={{ url_for('static', filename='css/style.css') }}>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates&family=Montserrat:wght@100&display=swap" rel="stylesheet">
+        <script>
+    let date = new Date().toLocaleDateString();
+    var countDownDate = new Date(date +" {{ courier['closing_time'] }}").getTime();
+
+    var countdownfunction = setInterval(function() {
+
+    var now = new Date().getTime();
+
+    var distance = countDownDate - now;
+
+    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    if (distance < 0) {
+        clearInterval(countdownfunction);
+        document.getElementById("timer").innerHTML = "Прием заказов закрыт!";
+    }
+    else {
+        document.getElementById("timer").innerHTML = hours + ":" + minutes + ":" + seconds;
+    }
+
+}, 1000);
+</script>
+  </head>
+  <body>
+    <header class="header1">
+        <h2>Курьеры</h2>
+    </header>
+    <main>
+        <div class="con">
+          <p>Курьер: {{ courier['name'] }}</p>
+          <p>{{ courier['delivery_time_start'] }} - {{ courier['delivery_time_end'] }}</p>
+          <div class="content">
+              {% for place in courier['places'].split(", ") %}
+                <p>{{ place }}</p>
+              {% endfor %}
+          </div>
+          <p>{{ courier['comment'] }}</p>
+            <p>Цена: {{ courier['price'] }} рублей</p>
+            </div>
+            {% if timeout <= 0 and session['id'] != courier['courier_id'] and courier['status'] != 0 %}
+                <a href="/order/{{ courier['id'] }}" class="button">Сделать заказ</a>
+                <p id="timer"></p>
+                <a href="{{url_for('couriers')}}" style="padding-top: 20px">Отменить</a>
+            {% elif session['id'] == courier['courier_id'] and courier['status'] != 0 %}
+                <a href="/courier/close/{{ courier['id'] }}" class="button">Закрыть прием заказов</a>
+                <p id="timer"></p>
+                <a href="{{url_for('couriers')}}" style="padding-top: 20px">Вернуться</a>
+            {% else %}
+                <p class="timer">Прием заказов закрыт!</p>
+                <a href="{{url_for('couriers')}}" style="padding-top: 20px">Вернуться</a>
+            {% endif %}
+    </main>
+
+      <div class = "footer">
+    <div class="border"></div>
+      <div class="menu">
+        <a href="{{url_for('couriers')}}" class="nav"><img src={{ url_for('static', filename='img/car.png') }}><p>Курьеры</p></a>
+          {% if session['courier'] %}
+            <a href="{{url_for('chat')}}" class="nav"><img src={{ url_for('static', filename='img/chat.png') }}><p>Заявки</p></a>
+          {% endif %}
+        <a href="{{url_for('orders')}}" class="nav"><img src={{ url_for('static', filename='img/shopping-bag.png') }}><p>Заказы</p></a>
+        <a href="{{url_for('profile')}}" class="nav"><img src={{ url_for('static', filename='img/user.png') }}><p>Профиль</p></a>
+      </div>
+    </div>
+
+  </body>
+</html>

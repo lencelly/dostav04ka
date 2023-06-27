@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <title>Доставочка</title>
+    <link rel="stylesheet" href={{ url_for('static', filename='css/style.css') }}>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates&family=Montserrat:wght@100&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <header class="header1">
+        <h2>Заказы</h2>
+    </header>
+    <main>
+        {% if orders|string != '()' %}
+            {% for el in orders %}
+              <div class="orders">
+              <p>{{ (el['datetime']|string)[:19] }}</p>
+                  <div class="content">
+                  <p>Курьер: <span style="font-family: 'Montserrat'">{{ el['name'] }}</span></p><br>
+                <p>{{ el['place'] }} (количество позиций: {{ el['amount'] }}), заказ №{{ el['order_num'] }}</p>
+                    {% if el['comment']!='' %}
+                        <p>Ваш комментарий: <span style="font-family: 'Montserrat'">{{ el['comment'] }}</span></p>
+                    {% endif %}
+                      <br><p>Контакты курьера: <span style="font-family: 'Montserrat'">{{ el['ccontact'] }}</span></p>
+
+                  <p>Цена: <span style="font-family: 'Montserrat'">{{ el['price'] }} рублей</span></p>
+                  </div>
+              <div class="bot" style="margin-bottom: 0">
+                  <p class="points" style="font-family: 'Montserrat Alternates'">Статус: <span style="font-family: 'Montserrat'">{{ el['status'] }}</span></p>
+                  <form class="status" method="POST" action="{{ url_for('orders') }}/{{ el['id'] }}">
+                      {% if el['status'] == 'Отправлен курьеру' %}
+                          <div class = "stat" style="margin: 0;padding: 0;">
+                          <p style="text-align: center; margin-left: 0">Отменить?</p>
+                              <div class="stat_buttons">
+                          <button type="submit" name="action" value="cancel">✓</button>
+                          </div>
+                         </div>
+                      {% endif %}
+                  </form>
+              </div>
+              </div>
+            {% endfor %}
+            {% else %}
+                <p style="padding: 40px 0;margin-left: 30px; margin-right: 30px;">У вас нет заказов</p>
+        {% endif %}
+      <div class = "footer">
+    <div class="border"></div>
+      <div class="menu">
+        <a href="{{url_for('couriers')}}" class="nav"><img src={{ url_for('static', filename='img/car.png') }}><p>Курьеры</p></a>
+          {% if session['courier'] %}
+            <a href="{{url_for('chat')}}" class="nav"><img src={{ url_for('static', filename='img/chat.png') }}><p>Заявки</p></a>
+          {% endif %}
+        <a href="{{url_for('orders')}}" id="active" class="nav"><img src={{ url_for('static', filename='img/shopping-bag.png') }}><p>Заказы</p></a>
+        <a href="{{url_for('profile')}}" class="nav"><img src={{ url_for('static', filename='img/user.png') }}><p>Профиль</p></a>
+      </div>
+    </div>
+
+  </body>
+</html>

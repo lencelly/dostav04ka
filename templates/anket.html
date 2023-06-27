@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <title>Доставочка</title>
+    <link rel="stylesheet" href={{ url_for('static', filename='css/style.css') }}>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates&family=Montserrat:wght@100&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  </head>
+  <body>
+    <header class="header1">
+        <h2>Открыть приём заказов</h2>
+    </header>
+    <main>
+        <form action="{{ url_for('form') }}" method="post">
+            <p>Время доставки c <input type="time" class="line" id="dts" name="dts" style="width: 80px"> до <input type="time" class="line" id="dte" name="dte" style="width: 80px" required></p>
+            <div class="fields1">
+                <div class="fi">
+                  <p>Приём заказов до</p>
+                    <p>Способ связи:</p>
+                    <p>Цена:</p>
+                </div>
+                <div class="inp">
+                  <input type="time" class="line" id="closing_time" name="closing_time" required>
+                  <input class="line" id="contact" name="contact" value="{{ session['contact'] }}" required placeholder="Ваши контакты">
+                 <input class="line" id="price" name="price" required placeholder="Цена без валюты">
+            </div>
+                </div>
+            <select required id="selectplaces" name="selectplaces" class="line">
+                    <option selected="selected">Выберите места</option>
+                    <option class="opt" value="vit">Вкусно и точка</option>
+                    <option class="opt" value="kfc">KFC</option>
+                    <option class="opt" value="uma">Umami</option>
+                    <option class="opt" value="tokio">Токио</option>
+                    <option class="opt" value="bk">Burger King</option>
+                  </select>
+            <input readonly class="p" id="places" name="places" style="margin: 15px 0" required placeholder="Здесь будут выводится выбранные из списка места"></input>
+          <textarea class="comm" id="comm" name="comm" placeholder="Комментарий (поле можно оставить пустым)"></textarea>
+            <p style="height: auto">Ограничить количество заказов?<br><span style="color: #9297A9">(поле можно оставить пустым)</span></p>
+                <input class="line" id="limit" name="limit" style="text-align: center; width: 70px">
+            <button type="submit" class="button" value="open">Открыть</button>
+            <div class="msg">{{ msg }}</div>
+        </form>
+    </main>
+
+      <div class = "footer">
+    <div class="border"></div>
+      <div class="menu">
+        <a href="{{url_for('couriers')}}" class="nav"><img src={{ url_for('static', filename='img/car.png') }}><p>Курьеры</p></a>
+          {% if session['courier'] %}
+            <a href="{{url_for('chat')}}" class="nav"><img src={{ url_for('static', filename='img/chat.png') }}><p>Заявки</p></a>
+          {% endif %}
+        <a href="{{url_for('orders')}}" class="nav"><img src={{ url_for('static', filename='img/shopping-bag.png') }}><p>Заказы</p></a>
+        <a href="{{url_for('profile')}}" class="nav"><img src={{ url_for('static', filename='img/user.png') }}><p>Профиль</p></a>
+      </div>
+    </div>
+
+  </body>
+  <script>
+    $(document).ready(function() {
+      $('#selectplaces').on('change',function(){
+        var option = this.options[this.selectedIndex].innerHTML;
+        if ($('#places').val() == "") $('#places').val(option);
+        else {
+            let value = $('#places').val();
+            value = value + ", " + option;
+            $('#places').val(value);
+            };
+        this.options[this.selectedIndex].remove();
+      });
+    });
+  </script>
+</html>

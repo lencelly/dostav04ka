@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <title>Доставочка</title>
+    <link rel="stylesheet" href={{ url_for('static', filename='css/style.css') }}>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates&family=Montserrat:wght@100&display=swap" rel="stylesheet">
+  </head>
+  <body>
+      <header>
+        <div class="hat">
+          <h1> Доставочка </h1>
+          <div class="basket"> <img src={{ url_for('static', filename='img/shopping-basket.png') }}> </div>
+        </div>
+     </header>
+    
+    <main>
+      <div class="fields"> 
+        <h2>Вход</h2>
+        <form action="{{ url_for('login') }}" method="post">
+            <input id="username" name="username" type="text" class="rectangle" required placeholder="Логин"></input>
+            <input id="password" name="password" type="password" class="rectangle" required placeholder="Пароль"></input>
+
+             <button type="submit" value="log-in">Войти</button>
+             <div class="msg">{{ msg }}</div>
+        </form>
+      </div>
+
+
+
+      <div class="foot">
+        <p>Ещё нет аккаунта?</p>
+        <p><a href="{{url_for('register')}}">Зарегистрироваться</a></p>
+      </div>
+    </main>
+
+    <footer></footer>
+
+  </body>
+</html>

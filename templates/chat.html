@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <title>Доставочка</title>
+    <link rel="stylesheet" href={{ url_for('static', filename='css/style.css') }}>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates&family=Montserrat:wght@100&display=swap" rel="stylesheet">
+      <script src="https://yastatic.net/jquery/3.3.1/jquery.min.js"></script>
+      <script>
+          function setTimer(today, date1, id, closing_time) {
+              let date = new Date().toLocaleDateString();
+              console.log(date.toString())
+              var countDownDate = new Date(date + " " + closing_time).getTime();
+              var countdownfunction = setInterval(function () {
+                  var now = new Date().getTime();
+
+                  var distance = countDownDate - now;
+
+                  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                  if ((distance < 0) || (date1.toString() != today.toString())) {
+                      clearInterval(countdownfunction);
+                      document.getElementById(id).innerHTML = "Прием заказов закрыт!";
+                  } else if (date1.toString() == today.toString()) {
+                      document.getElementById(id).innerHTML = hours + ":" + minutes + ":" + seconds;
+                  }
+              }, 1000);
+          };
+
+  </script>
+  </head>
+  <body>
+    <header class="header1">
+        <h2>Прием заявок</h2>
+    </header>
+    <main>
+      <div class="con">
+        <h3>Активные</h3>
+      </div>
+      {% if tcouriers|string != '()'%}
+            {% for el in tcouriers%}
+                  <a href="{{ url_for('chat') }}/{{ el['id'] }}" class="couriers">
+                    <p>Дата: {{ el['today'] }}</p>
+                    <p>{{ el['delivery_time_start'] }} - {{ el['delivery_time_end'] }}</p>
+                    <div class="content">
+                        {% for place in el['places'].split(", ")[:3] %}
+                            <p>{{ place }}</p>
+                        {% endfor %}
+                    {% if el['places'].split(", ")|length > 3 %}
+                            <p class="points">. . .</p>
+                        {% else %}
+                            <p class="points"></p>
+                        {% endif %}
+                    </div>
+                    <div class="bot">
+                        <p class="points">Цена: {{ el['price'] }} рублей</p>
+                        {% if el['status'] == 0 %}
+                            <p class="time"  style="text-align: right">Прием заказов закрыт!</p>
+                        {% else %}
+                            <p class="time" id="{{ el['id'] }}" title="{{el['closing_time']}}"><script>setTimer("{{ today }}","{{ el['today'] }}","{{ el['id'] }}", "{{el['closing_time']}}")</script></p>
+                        {% endif %}
+                    </div>
+                  </a>
+            {% endfor %}
+          {% else %}
+            <p style="padding: 40px 0;margin-left: 30px; margin-right: 30px;">У вас нет активных объявлений о приеме заказов</p>
+        {% endif %}
+
+      <div class="con">
+        <h3>Завершенные</h3>
+      </div>
+      {% if lcouriers|string != '()'%}
+            {% for el in lcouriers%}
+                    <a href="{{ url_for('chat') }}/{{ el['id'] }}" class="couriers">
+                <p>Дата: {{ el['today'] }}</p>
+                <p>{{ el['delivery_time_start'] }} - {{ el['delivery_time_end'] }}</p>
+                <div class="content">
+                    {% for place in el['places'].split(", ")[:3] %}
+                        <p>{{ place }}</p>
+                    {% endfor %}
+               {% if el['places'].split(", ")|length > 3 %}
+                            <p class="points">. . .</p>
+                        {% else %}
+                            <p class="points"></p>
+                        {% endif %}
+                    </div>
+                    <div class="bot">
+                        <p class="points">Цена: {{ el['price'] }} рублей</p>
+                        {% if el['status'] == 0 %}
+                            <p class="time"  style="text-align: right">Прием заказов закрыт!</p>
+                        {% else %}
+                            <p class="time" id="{{ el['id'] }}" title="{{el['closing_time']}}"><script>setTimer("{{ today }}","{{ el['today'] }}","{{ el['id'] }}", "{{el['closing_time']}}")</script></p>
+                        {% endif %}
+                    </div>
+              </a>
+            {% endfor %}
+          {% else %}
+            <p style="padding: 40px 0;margin-left: 30px; margin-right: 30px;">У вас нет завершенных объявлений о приеме заказов</p>
+        {% endif %}
+    </main>
+
+      <div class = "footer">
+    <div class="border"></div>
+      <div class="menu">
+        <a href="{{url_for('couriers')}}" class="nav"><img src={{ url_for('static', filename='img/car.png') }}><p>Курьеры</p></a>
+          {% if session['courier'] %}
+            <a href="{{url_for('chat')}}" id="active" class="nav"><img src={{ url_for('static', filename='img/chat.png') }}><p>Заявки</p></a>
+          {% endif %}
+        <a href="{{url_for('orders')}}" class="nav"><img src={{ url_for('static', filename='img/shopping-bag.png') }}><p>Заказы</p></a>
+        <a href="{{url_for('profile')}}" class="nav"><img src={{ url_for('static', filename='img/user.png') }}><p>Профиль</p></a>
+      </div>
+    </div>
+
+  </body>
+</html>
