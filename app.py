@@ -29,6 +29,7 @@ mysql = MySQL(app)
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     msg = ''
+    error = ''
     if session.get('loggedin'):
         return redirect(url_for('couriers'))
     # if session['logged_in'] or not session.new:
@@ -52,13 +53,14 @@ def login():
             session['courier'] = account['courier']
             return redirect('couriers')
         else:
-            msg = 'Неправильный логин / пароль'
-    return render_template('auto.html', msg=msg)
+            error = 'Неправильный логин / пароль'
+    return render_template('auto.html', msg=msg, error=error)
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     msg = ''
+    error = ''
     if session.get('loggedin'):
         return redirect(url_for('couriers'))
     elif request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form and 'building' in request.form:
@@ -70,22 +72,22 @@ def register():
         cursor.execute('SELECT * FROM users WHERE username = % s', (username,))
         account = cursor.fetchone()
         if account:
-            msg = 'Аккаунт уже существует'
+            eror = 'Аккаунт уже существует'
         elif not re.match(r'[A-Za-z]+\.[A-Za-z]{2,3}+@students.dvfu.ru', email):
-            msg = 'Неправильный адрес почты'
+            error = 'Неправильный адрес почты'
         elif not re.match(r'[A-Za-z0-9]+', username):
-            msg = 'Логин должен содержать только английские буквы и цифры'
+            error = 'Логин должен содержать только английские буквы и цифры'
         elif not username or not password or not email or not building:
-            msg = 'Пожалуйста, заполните все поля'
+            error = 'Пожалуйста, заполните все поля'
         else:
             hash_password = hashlib.sha256(password.encode())
-            cursor.execute('INSERT INTO users VALUES (NULL, % s, % s, % s, % s, DEFAULT, DEFAULT)',
-                           (username, hash_password.hexdigest(), email, building))
+            cursor.execute('INSERT INTO users VALUES (NULL, % s, % s, % s, % s, DEFAULT, DEFAULT, % s)',
+                           (username, hash_password.hexdigest(), email, building, ''))
             mysql.connection.commit()
             msg = 'Вы успешно зарегистрировались'
     elif request.method == 'POST':
-        msg = 'Пожалуйста, заполните все поля'
-    return render_template('reg.html', msg=msg)
+        error = 'Пожалуйста, заполните все поля'
+    return render_template('reg.html', msg=msg, error=error)
 
 
 @app.route('/logout')
@@ -114,6 +116,7 @@ def couriers():
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
     msg = ''
+    error = ''
     if not session.get('loggedin'):
         return redirect(url_for('login'))
     else:
@@ -139,9 +142,9 @@ def profile():
                 cursor.execute('SELECT * FROM users WHERE username = % s and id != % s', (username, session['id']))
                 account = cursor.fetchone()
                 if account:
-                    msg = 'Такой логин занят'
+                    error = 'Такой логин занят'
                 elif not re.match(r'[A-Za-z0-9]+', username):
-                    msg = 'Логин должен содержать только английские буквы и цифры'
+                    error = 'Логин должен содержать только английские буквы и цифры'
                 else:
                     cursor.execute('UPDATE users SET username = % s WHERE id = % s', (username, session['id']))
                     mysql.connection.commit()
@@ -152,9 +155,9 @@ def profile():
                 cursor.execute('SELECT * FROM users WHERE email = % s and id != % s', (email, session['id']))
                 account = cursor.fetchone()
                 if account:
-                    msg = 'Такая почта занята'
+                    error = 'Такая почта занята'
                 elif not re.match(r'[A-Za-z]+\.[A-Za-z]{2,3}+@students.dvfu.ru', email):
-                    msg = 'Неправильный адрес почты'
+                    error = 'Неправильный адрес почты'
                 else:
                     cursor.execute('UPDATE users SET email = % s WHERE id = % s', (email, session['id']))
                     mysql.connection.commit()
@@ -185,9 +188,9 @@ def profile():
             else:
                 if msg == '':
                     msg = "Данные успешно обновлены"
-                return render_template('profile.html', msg=msg)
+                return render_template('profile.html', msg=msg, error=error)
 
-        return render_template('profile.html', msg=msg)
+        return render_template('profile.html', msg=msg, error=error)
 
 
 @app.route('/chat')
@@ -317,7 +320,7 @@ def close_orders(couriers_id):
 
 @app.route('/form', methods=['GET', 'POST'])
 def form():
-    msg = ''
+    error = ''
     if not session.get('loggedin'):
         return redirect(url_for('login'))
     else:
@@ -347,14 +350,14 @@ def form():
                 mysql.connection.commit()
             return redirect('couriers')
         elif request.method == 'POST':
-            msg = 'Пожалуйста, заполните все поля'
+            error = 'Пожалуйста, заполните все поля'
 
-    return render_template('anket.html', msg=msg)
+    return render_template('anket.html', error=error)
 
 
 @app.route('/order/<couriers_id>/', methods=['GET', 'POST'])
 def order(couriers_id):
-    msg = ''
+    error = ''
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT * FROM couriers WHERE id = % s', [couriers_id])
     courier = cursor.fetchone()
@@ -380,9 +383,9 @@ def order(couriers_id):
             mysql.connection.commit()
         return redirect('/orders')
     elif request.method == 'POST':
-        msg = 'Пожалуйста, заполните все поля'
+        error = 'Пожалуйста, заполните все поля'
 
-    return render_template('order.html', msg=msg, courier=courier, id=id)
+    return render_template('order.html', error=error, courier=courier, id=id)
 
 
 @app.errorhandler(404)
@@ -391,4 +394,4 @@ def not_found_error(error):
 
 
 if __name__ == '__main__':
-    app.run
+    app.run()

@@ -151,7 +151,7 @@ button p, p, a{
     color: #FFFFFF;
 }
 
-.msg{
+.error{
     height: 20px;
     text-align: center;
     font-family: 'Montserrat Alternates';
@@ -164,6 +164,20 @@ button p, p, a{
     padding: auto;
 
     color: #C14359;
+}
+.msg{
+    height: 20px;
+    text-align: center;
+    font-family: 'Montserrat Alternates';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 20px;
+    margin-bottom: 0;
+    margin-top: 8px;
+    padding: auto;
+
+    color: white;
 }
 
 .foot{
